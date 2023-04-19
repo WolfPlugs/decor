@@ -1,16 +1,16 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
+  "id": "dev.wolfplugs.decor",
+  "name": "Decor plugin",
   "description": "A plugin template",
   "author": {
-    "name": "replugged",
-    "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "name": "Wolfkid200444",
+    "discordID": "347096063569559553",
+    "github": "WolfPlugs"
   },
   "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "WolfPlugs/decor"
   },
   "license": "MIT",
   "type": "replugged-plugin",
