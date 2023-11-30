@@ -1,3 +1,8 @@
-# Replugged plugin template
+# Decor 
 
-See the [plugin development guide](https://guide.replugged.dev/docs/plugins/getting-started) for more information on using this template.
+very cool
+
+
+## credits
+
+ - [Fiery](https://github.com/FieryFlames "FieryFlames") - *code*
