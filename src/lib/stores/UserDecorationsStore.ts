@@ -1,30 +1,37 @@
 import { common } from "replugged";
 import { create } from "../zustand";
 import { getUsersDecorations } from "../api";
-import { SKU_ID } from "../constants";
+import { DECORATION_FETCH_COOLDOWN, SKU_ID } from "../constants";
 import { AvatarDecoration } from "../..";
 import subscribeToFluxDispatcher from "../utils/subscribeToFluxDispatcher";
+import { useCurrentUserDecorationsStore } from "./CurrentUserDecorationsStore";
+import { useAuthorizationStore } from "./AuthorizationStore";
 
 const { lodash, users, fluxDispatcher, React, channels } = common;
 
+interface UserDecorationData {
+  asset: string | null;
+  fetchedAt: Date;
+}
+
 interface UsersDecorationsState {
-  usesDecorations: Map<string, string | null>;
+  usesDecorations: Map<string, UserDecorationData>;
   fetchQueue: Set<string>;
   bulkFetch: () => Promise<void>;
   fetch: (userId: string, force?: boolean) => Promise<void>;
   fetchMany: (userIds: string[]) => Promise<void>;
   getAsset: (userId: string) => string | null | undefined;
-  get: (userId: string) => string | null | undefined;
+  get: (userId: string) => UserDecorationData | undefined;
   has: (userId: string) => boolean;
   set: (userId: string, decoration: string | null) => void;
 }
 
 export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get) => ({
-  usersDecorations: new Map(),
+  usersDecorations: new Map<string, UserDecorationData>(),
   fetchQueue: new Set(),
   bulkFetch: lodash.debounce(async () => {
     const { fetchQueue, usersDecorations } = get();
-    set({ fetchQueue: new Set() });
+   set({ fetchQueue: new Set() });
 
     const fetchIds = Array.from(fetchQueue);
     if (fetchIds.length === 0) return;
@@ -32,10 +39,11 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
 
     const newUsersDecorations = new Map(usersDecorations);
     for (const [userId, decoration] of Object.entries(fetchedUsersDecorations)) {
-      newUsersDecorations.set(userId, decoration);
+      newUsersDecorations.set(userId, { asset: decoration, fetchedAt: new Date() });
 
       const user = users.getUser(userId) as any;
       if (user) {
+        console.log("Bulk: ",decoration)
         user.avatarDecoration = decoration ? { asset: decoration, skuId: SKU_ID } : null;
         user.avatarDecorationData = user.avatarDecoration;
 
@@ -54,8 +62,11 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
   async fetch(userId: string, force: boolean = false) {
     const { usersDecorations, fetchQueue, bulkFetch } = get();
 
-    if (!force && usersDecorations.has(userId)) return;
-
+    if (usersDecorations.has(userId)) {
+      console.log("Fetch: ",usersDecorations.get(userId))
+      const { fetchedAt } = usersDecorations.get(userId)!;
+      if (!force && Date.now() - fetchedAt.getTime() < DECORATION_FETCH_COOLDOWN) return;
+    }
     set({ fetchQueue: new Set(fetchQueue).add(userId) });
     bulkFetch();
   },
@@ -66,9 +77,15 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
     const { usersDecorations, fetchQueue, bulkFetch } = get();
 
     const newFetchQueue = new Set(fetchQueue);
+
     for (const userId of userIds) {
-      if (!usersDecorations.has(userId)) newFetchQueue.add(userId);
+      if (usersDecorations.has(userId)) {
+        const { fetchedAt } = usersDecorations.get(userId)!;
+        if (Date.now() - fetchedAt.getTime() < DECORATION_FETCH_COOLDOWN) continue;
+      }
+      newFetchQueue.add(userId);
     }
+
     set({ fetchQueue: newFetchQueue });
     bulkFetch();
   },
@@ -86,29 +103,24 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
     const { usersDecorations } = get();
     const newUsersDecorations = new Map(usersDecorations);
 
-    newUsersDecorations.set(userId, decoration);
+    newUsersDecorations.set(userId, { asset: decoration, fetchedAt: new Date() });
     set({ usersDecorations: newUsersDecorations });
   },
 }));
 
 export const subscriptions = [
-  subscribeToFluxDispatcher("LOAD_MESSAGES_SUCCESS", ({ messages }) => {
-    useUsersDecorationsStore.getState().fetchMany(messages.map((m) => m.author.id));
+  subscribeToFluxDispatcher("USER_PROFILE_MODAL_OPEN", (data) => {
+    useUsersDecorationsStore.getState().fetch(data.userId, true);
   }),
+
   subscribeToFluxDispatcher("CONNECTION_OPEN", () => {
+    useAuthorizationStore.getState().init();
+    useCurrentUserDecorationsStore.getState().clear();
     useUsersDecorationsStore.getState().fetch(users.getCurrentUser().id, true);
   }),
-  subscribeToFluxDispatcher("MESSAGE_CREATE", (data) => {
-    const channelId = channels.getChannelId();
-    if (data.channelId === channelId) {
-      useUsersDecorationsStore.getState().fetch(data.message.author.id);
-    }
-  }),
-  subscribeToFluxDispatcher("TYPING_START", (data) => {
-    const channelId = channels.getChannelId();
-    if (data.channelId === channelId) {
-      useUsersDecorationsStore.getState().fetch(data.userId);
-    }
+
+  subscribeToFluxDispatcher("LOAD_MESSAGES_SUCCESS", ({ messages }) => {
+    useUsersDecorationsStore.getState().fetchMany(messages.map((m) => m.author.id));
   }),
 ];
 
@@ -134,6 +146,8 @@ export function useUserDecorAvatarDecoration(user): AvatarDecoration | null | un
     const { fetch: fetchUserDecorAvatarDecoration } = useUsersDecorationsStore.getState();
     fetchUserDecorAvatarDecoration(user.id);
   }, []);
+
+  console.log("Effects", decorAvatarDecoration)
 
   return decorAvatarDecoration ? { asset: decorAvatarDecoration, skuId: SKU_ID } : null;
 }
