@@ -25,20 +25,18 @@ export async function start(): Promise<void> {
     const store = useUsersDecorationsStore.getState();
 
     if (res && store.has(res?.id)) {
-      const decor = store.get(res.id);
+      const { asset } = store.get(res.id) ?? {};
 
-      if (decor && res.avatarDecoration?.skuId !== SKU_ID) {
-        Object.defineProperty(res, "avatarDecoration", {
-          get: () => {
-            return { asset: decor.asset, skuId: SKU_ID };
-          },
-        });
-      } else if (!decor && res.avatarDecoration && res.avatarDecoration?.skuId === SKU_ID) {
-        //res.avatarDecoration = null;
-      }
+      if (!asset || res.avatarDecoration?.skuId == SKU_ID) return res;
+
+      Object.defineProperty(res, "avatarDecoration", {
+        get: () => {
+          return { asset: asset, skuId: SKU_ID };
+        },
+      });
       Object.defineProperty(res, "avatarDecorationData", {
         get: () => {
-          return { asset: decor.asset, skuId: SKU_ID };
+          return { asset: asset, skuId: SKU_ID };
         },
       });
     }
@@ -61,7 +59,8 @@ export async function start(): Promise<void> {
   });
 
   inject.after(webpack.getByProps("canUserUse"), "canUserUse", (args, res, instance) => {
-    if (args[0].name === "profilePremiumFeatures") return true;
+    const store = useUsersDecorationsStore.getState();
+    if (args[0].name === "profilePremiumFeatures" && store.has(args[1]?.id)?.asset) return true;
     return res;
   });
 }
