@@ -36,7 +36,6 @@ export async function start(): Promise<void> {
       } else if (!decor && res.avatarDecoration && res.avatarDecoration?.skuId === SKU_ID) {
         //res.avatarDecoration = null;
       }
-      res.premiumType = 0;
       Object.defineProperty(res, "avatarDecorationData", {
         get: () => {
           return { asset: decor.asset, skuId: SKU_ID };
@@ -51,7 +50,6 @@ export async function start(): Promise<void> {
     const [{ avatarDecoration, canAnimate }] = args;
     if (avatarDecoration?.skuId === SKU_ID) {
       const url = new URL(`${CDN_URL}/${avatarDecoration.asset}.png`);
-      console.log(avatarDecoration.asset);
       url.searchParams.set(
         "animate",
         (!!canAnimate && isAnimatedAvatarDecoration(avatarDecoration.asset ?? "")).toString(),
