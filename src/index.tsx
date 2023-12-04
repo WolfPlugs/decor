@@ -1,14 +1,21 @@
-import { Injector, common, webpack, Logger } from "replugged";
+import { Injector, common, webpack, Logger, components } from "replugged";
 import {
   subscriptions as UserDecorationsStoreSubscriptions,
   useUserDecorAvatarDecoration,
   useUsersDecorationsStore,
 } from "./lib/stores/UserDecorationsStore";
 import { CDN_URL, RAW_SKU_ID, SKU_ID } from "./lib/constants";
+import DecorSection from "./ui/components/DecorSection";
+import { Margins } from "./ui/modals/ChangeDecorationModal";
+import { Link } from "./ui/components/Link";
 
-const { users } = common;
+const { users, fluxDispatcher } = common;
+const { FormText } = components;
+
 const AvatarURL = webpack.getByProps("getUserAvatarURL");
 const { isAnimatedAvatarDecoration } = webpack.getByProps("isAnimatedAvatarDecoration");
+const modals = webpack.getByProps("openModalLazy");
+
 const inject = new Injector();
 
 export const logger = Logger.plugin("UserDecorations");
@@ -64,6 +71,8 @@ export async function start(): Promise<void> {
     return res;
   });
 }
+
+export { Settings } from "./Settings";
 
 export function stop(): void {
   inject.uninjectAll();

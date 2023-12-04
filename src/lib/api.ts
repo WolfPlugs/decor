@@ -1,6 +1,15 @@
 import { API_URL } from "./constants";
 import { useAuthorizationStore } from "./stores/AuthorizationStore";
 
+
+export interface Preset {
+  id: string;
+  name: string;
+  description: string | null;
+  decorations: Decoration[];
+  authorIds: string[];
+}
+
 export interface Decoration {
   hash: string;
   animated: boolean;
@@ -43,3 +52,5 @@ export const getUserDecorations = async (id: string = "@me"): Promise<Decoration
 
 export const getUserDecoration = async (id: string = "@me"): Promise<Decoration | null> =>
   fetchApi(API_URL + `/users/${id}/decoration`).then((c) => c.json());
+
+export const getPresets = async (): Promise<Preset[]> => fetch(API_URL + "/decorations/presets").then(c => c.json());

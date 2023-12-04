@@ -43,7 +43,6 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
 
       const user = users.getUser(userId) as any;
       if (user) {
-        console.log("Bulk: ",decoration)
         user.avatarDecoration = decoration ? { asset: decoration, skuId: SKU_ID } : null;
         user.avatarDecorationData = user.avatarDecoration;
 
@@ -63,7 +62,6 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
     const { usersDecorations, fetchQueue, bulkFetch } = get();
 
     if (usersDecorations.has(userId)) {
-      console.log("Fetch: ",usersDecorations.get(userId))
       const { fetchedAt } = usersDecorations.get(userId)!;
       if (!force && Date.now() - fetchedAt.getTime() < DECORATION_FETCH_COOLDOWN) return;
     }

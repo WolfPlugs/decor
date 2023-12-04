@@ -12,13 +12,13 @@ export default async () => new Promise(r => openModal(props =>
         scopes={["identify"]}
         responseType="code"
         redirectUri={AUTHORIZE_URL}
-        permissions={0}
+        permissions={0n}
         clientId={CLIENT_ID}
         cancelCompletesFlow={false}
         callback={async (response: any) => {
             try {
                 const url = new URL(response.location);
-                url.searchParams.append("client", "vencord");
+                url.searchParams.append("client", "replugged");
 
                 const req = await fetch(url);
 
@@ -30,7 +30,7 @@ export default async () => new Promise(r => openModal(props =>
                 }
                 r(void 0);
             } catch (e) {
-                logger("Decor").error("Failed to authorize", e);
+                logger.error("Decor: Failed to authorize", e);
             }
         }}
     />

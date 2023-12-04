@@ -21,10 +21,10 @@ const indexedDBStorage: StateStorage = {
     return (await authorizationToken).get(name).then((v) => v ?? null);
   },
   async setItem(name: string, value: string): Promise<void> {
-    await (await authorizationToken).set(name, value);
+    (await authorizationToken).set(name, value);
   },
   async removeItem(name: string): Promise<void> {
-    await authorizationToken.del(name);
+    (await authorizationToken).set(name, null);
   },
 };
 
@@ -47,7 +47,7 @@ export const useAuthorizationStore = create<AuthorizationState>(
         init();
       },
       authorize: () => void showAuthorizationModal(),
-      isAuthorized: () => !!get().token,
+      isAuthorized: () => console.log(get().token),
     }),
     {
       name: "decor-auth",
