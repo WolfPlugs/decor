@@ -5,7 +5,7 @@ import { Decoration } from "../../lib/api";
 import { CopyIcon, DeleteIcon } from "./Icons";
 
 const { ContextMenu: Menu } = components
-const { contextMenu: ContextMenuApi, users } = common
+const { contextMenu: ContextMenuApi, users, modal: { confirm } } = common
 
 
 export default function DecorationContextMenu({ decoration }: { decoration: Decoration; }) {
@@ -28,7 +28,7 @@ export default function DecorationContextMenu({ decoration }: { decoration: Deco
               label="Delete Decoration"
               color="danger"
               icon={DeleteIcon}
-              action={() => Alerts.show({
+              action={() => confirm({
                   title: "Delete Decoration",
                   body: `Are you sure you want to delete ${decoration.alt}?`,
                   confirmText: "Delete",

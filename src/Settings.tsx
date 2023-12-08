@@ -14,7 +14,7 @@ export function Settings() {
   return (
     <div>
       <DecorSection hideTitle hideDivider noMargin />
-      {/* <FormText type="description" className={[Margins.top8, Margins.bottom8]}>
+      <FormText.DESCRIPTION className={[Margins.top8, Margins.bottom8]}>
         You can also access Decor decorations from the <Link
           href="/settings/profile-customization"
           onClick={e => { 
@@ -23,7 +23,7 @@ export function Settings() {
             fluxDispatcher.dispatch({ type: "USER_SETTINGS_MODAL_SET_SECTION", section: "Profile Customization" });
           }}
         >Profiles</Link> PAGE.
-      </FormText> */}
+      </FormText.DESCRIPTION>
     </div>
   )
 }

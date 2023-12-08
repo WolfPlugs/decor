@@ -13,6 +13,7 @@ import { openInviteModal } from "./openInviteModal";
 import { Margins } from "../../Settings";
 import { AvatarDecorationModalPreview } from "../components";
 import { GUILD_ID, INVITE_KEY } from "../../lib/constants";
+import { User } from "discord-types/general";
 
 const {
   React,
@@ -20,7 +21,7 @@ const {
   parser,
   guilds,
   fluxDispatcher,
-  modal: { openModal },
+  modal: { openModal, confirm },
 } = common;
 const {
   FormText,
@@ -32,7 +33,7 @@ const {
   ErrorBoundary,
 } = components;
 
-const UserSummaryItem = webpack.getBySource("UserSummaryItem");
+const UserSummaryItem = webpack.getBySource("UserSummaryItem").default;
 const DecorationModalStyles = webpack.getByProps("modalFooterShopButton");
 const modals = webpack.getByProps("openModalLazy");
 
@@ -72,7 +73,7 @@ function SectionHeader({ section }: { section: Section }) {
   return (
     <div>
       <Flex>
-        <FormText style={{ flexGrow: 1 }}>{section.title}</FormText>
+        <FormText.DEFAULT style={{ flexGrow: 1 }}>{section.title}</FormText.DEFAULT>
         {hasAuthorIds && (
           <UserSummaryItem
             users={authors}
@@ -87,9 +88,9 @@ function SectionHeader({ section }: { section: Section }) {
         )}
       </Flex>
       {hasSubtitle && (
-        <FormText type="description" className={Margins.bottom8}>
+        <FormText.DESCRIPTION type="description" className={Margins.bottom8}>
           {section.subtitle}
-        </FormText>
+        </FormText.DESCRIPTION>
       )}
     </div>
   );
@@ -140,7 +141,7 @@ export default function ChangeDecorationModal(props: any) {
     },
     ...presets.map((preset) => ({
       title: preset.name,
-      subtitle: preset.description || undefined,
+      subtitle: preset.description ?? undefined,
       sectionKey: `preset-${preset.id}`,
       items: preset.decorations,
       authorIds: preset.authorIds,
@@ -161,7 +162,7 @@ export default function ChangeDecorationModal(props: any) {
           <ModalCloseButton onClick={props.onClose} />
         </ModalHeader>
         <ModalContent className={cl("change-decoration-modal-content")} scrollbarType="none">
-          {/* <SectionedGridList
+          <SectionedGridList
           renderItem={item => {
             if (typeof item === "string") {
               switch (item) {
@@ -196,10 +197,12 @@ export default function ChangeDecorationModal(props: any) {
           }}
           getItemKey={item => typeof item === "string" ? item : item.hash}
           getSectionKey={section => section.sectionKey}
-          renderSectionHeader={section => <SectionHeader section={section} />}
+          renderSectionHeader={section => 
+          <SectionHeader section={section} />
+        }
           sections={data}
-        /> */}
-          {/* <div className={cl("change-decoration-modal-preview")}>
+        />
+          <div className={cl("change-decoration-modal-preview")}>
           <AvatarDecorationModalPreview
             avatarDecorationOverride={avatarDecorationOverride}
             user={users.getCurrentUser()}
@@ -214,7 +217,7 @@ export default function ChangeDecorationModal(props: any) {
             </Text>
           }
           {activeDecorationHasAuthor && <Text key={`createdBy-${activeSelectedDecoration.authorId}`}>Created by {parser.parse(`<@${activeSelectedDecoration.authorId}>`)}</Text>}
-        </div> */}
+        </div>
         </ModalContent>
         <ModalFooter className={[cl("change-decoration-modal-footer", cl("modal-footer"))]}>
           <div className={cl("change-decoration-modal-footer-btn-container")}>
@@ -232,7 +235,7 @@ export default function ChangeDecorationModal(props: any) {
           <div className={cl("change-decoration-modal-footer-btn-container")}>
             <Button
               onClick={() =>
-                Alerts.show({
+                confirm({
                   title: "Log Out",
                   body: "Are you sure you want to log out of Decor?",
                   confirmText: "Log Out",
