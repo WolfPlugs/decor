@@ -58,14 +58,14 @@ export default function CreateDecorationModal(props) {
       className={DecorationModalStyles.modal}
   >
       <ModalHeader separator={false} className={cl("modal-header")}>
-          <Text
+          <Text.H2
               color="header-primary"
               variant="heading-lg/semibold"
               tag="h1"
               style={{ flexGrow: 1 }}
           >
               Create Decoration
-          </Text>
+          </Text.H2>
           <ModalCloseButton onClick={props.onClose} />
       </ModalHeader>
       <ModalContent

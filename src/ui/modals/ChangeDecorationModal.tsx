@@ -152,13 +152,13 @@ export default function ChangeDecorationModal(props: any) {
     <ModalRoot {...props} size="dynamic" className={DecorationModalStyles.modal}>
       <ErrorBoundary>
         <ModalHeader separator={false} className={cl("modal-header")}>
-          <Text
+          <Text.H2
             color="header-primary"
             variant="heading-lg/semibold"
             tag="h1"
             style={{ flexGrow: 1 }}>
             Change Decoration
-          </Text>
+          </Text.H2>
           <ModalCloseButton onClick={props.onClose} />
         </ModalHeader>
         <ModalContent className={cl("change-decoration-modal-content")} scrollbarType="none">
@@ -209,12 +209,12 @@ export default function ChangeDecorationModal(props: any) {
           />
           {isActiveDecorationPreset && <Text tag="h3" className="p">Part of the {activeDecorationPreset.name} Preset</Text>}
           {typeof activeSelectedDecoration === "object" &&
-            <Text
+            <Text.H2
               variant="text-sm/semibold"
               color="header-primary"
             >
               {activeSelectedDecoration?.alt}
-            </Text>
+            </Text.H2>
           }
           {activeDecorationHasAuthor && <Text key={`createdBy-${activeSelectedDecoration.authorId}`}>Created by {parser.parse(`<@${activeSelectedDecoration.authorId}>`)}</Text>}
         </div>

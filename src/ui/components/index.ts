@@ -18,4 +18,7 @@ type DecorationGridDecorationComponent = React.ComponentType<HTMLProps<HTMLDivEl
 export const AvatarDecorationModalPreview = React.memo(webpack.getBySource("AvatarDecorationModalPreview"));
 
 export let DecorationGridItem: DecorationGridItemComponent;
+export const setDecorationGridItem = v => DecorationGridItem = v;
+
 export let DecorationGridDecoration: DecorationGridDecorationComponent;
+export const setDecorationGridDecoration = v => DecorationGridDecoration = v;
