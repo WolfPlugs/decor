@@ -12,6 +12,7 @@ import { useAuthorizationStore } from "../../lib/stores/AuthorizationStore";
 import { openInviteModal } from "./openInviteModal";
 import { Margins } from "../../Settings";
 import { AvatarDecorationModalPreview } from "../components";
+import { GUILD_ID, INVITE_KEY } from "../../lib/constants";
 
 const { React, users, parser, guilds, fluxDispatcher, modal: { openModal } } = common
 const { FormText, Flex, Modal: { ModalRoot, ModalHeader, ModalCloseButton, ModalContent, ModalFooter }, Text, Tooltip, Button, ErrorBoundary } = components
@@ -106,7 +107,6 @@ export default function ChangeDecorationModal(props: any) {
 
   const ownDecorations = decorations.filter(d => !presetDecorations.some(p => p.hash === d.hash));
 
-  console.log(avatarDecorationOverride)
   const data = [
     {
       title: "Your Decorations",
@@ -181,12 +181,12 @@ export default function ChangeDecorationModal(props: any) {
           renderSectionHeader={section => <SectionHeader section={section} />}
           sections={data}
         /> */}
-        <div className={cl("change-decoration-modal-preview")}>
+        {/* <div className={cl("change-decoration-modal-preview")}>
           <AvatarDecorationModalPreview
             avatarDecorationOverride={avatarDecorationOverride}
             user={users.getCurrentUser()}
           />
-          {isActiveDecorationPreset && <FormTitle className="p">Part of the {activeDecorationPreset.name} Preset</FormTitle>}
+          {isActiveDecorationPreset && <Text tag="h3" className="p">Part of the {activeDecorationPreset.name} Preset</Text>}
           {typeof activeSelectedDecoration === "object" &&
             <Text
               variant="text-sm/semibold"
@@ -196,7 +196,7 @@ export default function ChangeDecorationModal(props: any) {
             </Text>
           }
           {activeDecorationHasAuthor && <Text key={`createdBy-${activeSelectedDecoration.authorId}`}>Created by {parser.parse(`<@${activeSelectedDecoration.authorId}>`)}</Text>}
-        </div>
+        </div> */}
       </ModalContent>
       <ModalFooter className={[cl("change-decoration-modal-footer", cl("modal-footer"))]}>
         <div className={cl("change-decoration-modal-footer-btn-container")}>

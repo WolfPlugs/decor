@@ -47,7 +47,7 @@ export const useAuthorizationStore = create<AuthorizationState>(
         init();
       },
       authorize: () => void showAuthorizationModal(),
-      isAuthorized: () => console.log(get().token),
+      isAuthorized: () => !!get().token,
     }),
     {
       name: "decor-auth",
