@@ -16,44 +16,31 @@ interface AuthorizationState {
   isAuthorized: () => boolean;
 }
 
-const indexedDBStorage: StateStorage = {
-  async getItem(name: string): Promise<string | null> {
-    return (await authorizationToken).get(name).then((v) => v ?? null);
+export const authorizationStore = {
+  get token() {
+    return authorizationToken.get("token", null);
   },
-  async setItem(name: string, value: string): Promise<void> {
-    (await authorizationToken).set(name, value);
+  get tokens() {
+    return authorizationToken.get("tokens", {
+      [users.getCurrentUser().id]: authorizationToken.get("token", null),
+    });
   },
-  async removeItem(name: string): Promise<void> {
-    (await authorizationToken).set(name, null);
+  init: () => {},
+  setToken: (token: string) => {
+    authorizationToken.set("token", token);
+    authorizationToken.set("tokens", {
+      ...authorizationToken.get("tokens", {}),
+      [users.getCurrentUser().id]: token,
+    });
+  },
+  remove: (id: string) => {
+    const tokens = authorizationToken.get("tokens", {});
+
+    delete tokens[id];
+    authorizationToken.set("tokens", tokens);
+  },
+  authorize: () => void showAuthorizationModal(),
+  get isAuthorized() {
+    return () => Boolean(authorizationToken.get("token", null));
   },
 };
-
-export const useAuthorizationStore = create<AuthorizationState>(
-  persist(
-    (set, get) => ({
-      token: null,
-      tokens: {},
-      init: () => {
-        set({ token: get().tokens[users.getCurrentUser().id] ?? null });
-      },
-      setToken: (token: string) =>
-        set({ token, tokens: { ...get().tokens, [users.getCurrentUser().id]: token } }),
-      remove: (id: string) => {
-        const { tokens, init } = get();
-        const newTokens = { ...tokens };
-        delete newTokens[id];
-        set({ tokens: newTokens });
-
-        init();
-      },
-      authorize: () => void showAuthorizationModal(),
-      isAuthorized: () => !!get().token,
-    }),
-    {
-      name: "decor-auth",
-      getStorage: () => indexedDBStorage,
-      partialize: (state) => ({ tokens: state.tokens }),
-      onRehydrateStorage: () => (state) => state?.init(),
-    },
-  ),
-);

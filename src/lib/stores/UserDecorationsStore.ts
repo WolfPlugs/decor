@@ -5,7 +5,7 @@ import { DECORATION_FETCH_COOLDOWN, SKU_ID } from "../constants";
 import { AvatarDecoration } from "../..";
 import subscribeToFluxDispatcher from "../utils/subscribeToFluxDispatcher";
 import { useCurrentUserDecorationsStore } from "./CurrentUserDecorationsStore";
-import { useAuthorizationStore } from "./AuthorizationStore";
+import { authorizationStore } from "./AuthorizationStore";
 
 const { lodash, users, fluxDispatcher, React, channels } = common;
 
@@ -31,7 +31,7 @@ export const useUsersDecorationsStore = create<UsersDecorationsState>((set, get)
   fetchQueue: new Set(),
   bulkFetch: lodash.debounce(async () => {
     const { fetchQueue, usersDecorations } = get();
-   set({ fetchQueue: new Set() });
+    set({ fetchQueue: new Set() });
 
     const fetchIds = Array.from(fetchQueue);
     if (fetchIds.length === 0) return;
@@ -112,7 +112,6 @@ export const subscriptions = [
   }),
 
   subscribeToFluxDispatcher("CONNECTION_OPEN", () => {
-    useAuthorizationStore.getState().init();
     useCurrentUserDecorationsStore.getState().clear();
     useUsersDecorationsStore.getState().fetch(users.getCurrentUser().id, true);
   }),
@@ -145,7 +144,7 @@ export function useUserDecorAvatarDecoration(user): AvatarDecoration | null | un
     fetchUserDecorAvatarDecoration(user.id);
   }, []);
 
-  console.log("Effects", decorAvatarDecoration)
+  console.log("Effects", decorAvatarDecoration);
 
   return decorAvatarDecoration ? { asset: decorAvatarDecoration, skuId: SKU_ID } : null;
 }

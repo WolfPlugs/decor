@@ -1,4 +1,4 @@
-import { settings } from "replugged"
+import { settings } from "replugged";
 
-export const defaultSettings = {}
-export const authorizationToken = settings.init("decor.auth", defaultSettings)
+export const defaultSettings = {};
+export const authorizationToken = await settings.init("decor.auth", defaultSettings);

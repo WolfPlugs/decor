@@ -1,6 +1,5 @@
 import { API_URL } from "./constants";
-import { useAuthorizationStore } from "./stores/AuthorizationStore";
-
+import { authorizationStore } from "./stores/AuthorizationStore";
 
 export interface Preset {
   id: string;
@@ -31,7 +30,7 @@ export async function fetchApi(url: RequestInfo, options?: RequestInit) {
     ...options,
     headers: {
       ...options?.headers,
-      Authorization: `Bearer ${useAuthorizationStore.getState().token}`,
+      Authorization: `Bearer ${authorizationStore.token}`,
     },
   });
 
@@ -53,4 +52,5 @@ export const getUserDecorations = async (id: string = "@me"): Promise<Decoration
 export const getUserDecoration = async (id: string = "@me"): Promise<Decoration | null> =>
   fetchApi(API_URL + `/users/${id}/decoration`).then((c) => c.json());
 
-export const getPresets = async (): Promise<Preset[]> => fetch(API_URL + "/decorations/presets").then(c => c.json());
+export const getPresets = async (): Promise<Preset[]> =>
+  fetch(API_URL + "/decorations/presets").then((c) => c.json());
