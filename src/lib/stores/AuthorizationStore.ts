@@ -16,44 +16,25 @@ interface AuthorizationState {
   isAuthorized: () => boolean;
 }
 
-const indexedDBStorage: StateStorage = {
-  async getItem(name: string): Promise<string | null> {
-    return (await authorizationToken).get(name).then((v) => v ?? null);
+export const useAuthorizationStore = {
+  token: authorizationToken.get("token", null),
+  tokens: authorizationToken.get("tokens", {
+    [users.getCurrentUser().id]: authorizationToken.get("token", null),
+  }),
+  init: () => {},
+  setToken: (token: string) => {
+    authorizationToken.set("token", token);
+    authorizationToken.set("tokens", {
+      ...authorizationToken.get("tokens", {}),
+      [users.getCurrentUser().id]: token,
+    });
   },
-  async setItem(name: string, value: string): Promise<void> {
-    (await authorizationToken).set(name, value);
+  remove: (id: string) => {
+    const tokens = authorizationToken.get("tokens", {});
+
+    delete tokens[id];
+    authorizationToken.set("tokens", tokens);
   },
-  async removeItem(name: string): Promise<void> {
-    (await authorizationToken).set(name, null);
-  },
+  authorize: () => void showAuthorizationModal(),
+  isAuthorized: () => Boolean(authorizationToken.get("token", null)),
 };
-
-export const useAuthorizationStore = create<AuthorizationState>(
-  persist(
-    (set, get) => ({
-      token: null,
-      tokens: {},
-      init: () => {
-        set({ token: get().tokens[users.getCurrentUser().id] ?? null });
-      },
-      setToken: (token: string) =>
-        set({ token, tokens: { ...get().tokens, [users.getCurrentUser().id]: token } }),
-      remove: (id: string) => {
-        const { tokens, init } = get();
-        const newTokens = { ...tokens };
-        delete newTokens[id];
-        set({ tokens: newTokens });
-
-        init();
-      },
-      authorize: () => void showAuthorizationModal(),
-      isAuthorized: () => !!get().token,
-    }),
-    {
-      name: "decor-auth",
-      getStorage: () => indexedDBStorage,
-      partialize: (state) => ({ tokens: state.tokens }),
-      onRehydrateStorage: () => (state) => state?.init(),
-    },
-  ),
-);
