@@ -15,10 +15,10 @@ type DecorationGridDecorationComponent = React.ComponentType<HTMLProps<HTMLDivEl
   isSelected: boolean,
 }>;
 
-export const AvatarDecorationModalPreview = () => {
-  const component = webpack.getBySource("AvatarDecorationModalPreview");
-  return React.memo(component);
-};
+export const AvatarDecorationModalPreview = React.memo(webpack.getBySource("AvatarDecorationModalPreview"));
 
 export let DecorationGridItem: DecorationGridItemComponent;
+export const setDecorationGridItem = v => DecorationGridItem = v;
+
 export let DecorationGridDecoration: DecorationGridDecorationComponent;
+export const setDecorationGridDecoration = v => DecorationGridDecoration = v;

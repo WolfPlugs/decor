@@ -58,14 +58,14 @@ export default function CreateDecorationModal(props) {
       className={DecorationModalStyles.modal}
   >
       <ModalHeader separator={false} className={cl("modal-header")}>
-          <Text
+          <Text.H2
               color="header-primary"
               variant="heading-lg/semibold"
               tag="h1"
               style={{ flexGrow: 1 }}
           >
               Create Decoration
-          </Text>
+          </Text.H2>
           <ModalCloseButton onClick={props.onClose} />
       </ModalHeader>
       <ModalContent
@@ -75,7 +75,7 @@ export default function CreateDecorationModal(props) {
           <div className={cl("create-decoration-modal-form-preview-container")}>
               <div className={cl("create-decoration-modal-form")}>
                   {error !== null && <Text color="text-danger" variant="text-xs/normal">{error.message}</Text>}
-                  <FormText title="File">
+                  <FormText.DEFAULT title="File">
                       <FileUpload
                           filename={file?.name}
                           placeholder="Choose a file"
@@ -83,20 +83,20 @@ export default function CreateDecorationModal(props) {
                           filters={[{ name: "Decoration file", extensions: ["png", "apng"] }]}
                           onFileSelect={setFile}
                       />
-                      <FormText type="description" className={Margins.top8}>
+                      <FormText.DESCRIPTION type="description" className={Margins.top8}>
                           File should be APNG or PNG.
-                      </FormText>
-                  </FormText>
-                  <FormText title="Name">
+                      </FormText.DESCRIPTION>
+                  </FormText.DEFAULT>
+                  <FormText.DEFAULT title="Name">
                       <TextInput
                           placeholder="Companion Cube"
                           value={name}
                           onChange={setName}
                       />
-                      <FormText type="description" className={Margins.top8}>
+                      <FormText.DESCRIPTION type="description" className={Margins.top8}>
                           This name will be used when referring to this decoration.
-                      </FormText>
-                  </FormText>
+                      </FormText.DESCRIPTION>
+                  </FormText.DEFAULT>
               </div>
               <div>
                   <AvatarDecorationModalPreview
@@ -105,7 +105,7 @@ export default function CreateDecorationModal(props) {
                   />
               </div>
           </div>
-          <FormText type="description" className={Margins.bottom16}>
+          <FormText.DESCRIPTION type="description" className={Margins.bottom16}>
               Make sure your decoration does not violate <Link
                   href="https://github.com/decor-discord/.github/blob/main/GUIDELINES.md"
               >
@@ -130,7 +130,7 @@ export default function CreateDecorationModal(props) {
               >
                   Decor's Discord server
               </Link>.
-          </FormText>
+          </FormText.DESCRIPTION>
       </ModalContent>
       <ModalFooter className={cl("modal-footer")}>
           <Button

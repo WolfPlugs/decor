@@ -40,10 +40,8 @@ export default function DecorSection({
         <Button
           onClick={() => {
             if (!authorizationStore.isAuthorized()) {
-              authorizationStore
-                .authorize()
-                .then(openChangeDecorationModal)
-                .catch(() => {});
+              authorizationStore.authorize();
+              openChangeDecorationModal();
             } else openChangeDecorationModal();
             // openChangeDecorationModal();
           }}

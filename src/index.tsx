@@ -9,6 +9,7 @@ import DecorSection from "./ui/components/DecorSection";
 import { Margins } from "./ui/modals/ChangeDecorationModal";
 import { Link } from "./ui/components/Link";
 
+import "./style.css"
 const { users, fluxDispatcher } = common;
 const { FormText } = components;
 

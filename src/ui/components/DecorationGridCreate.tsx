@@ -16,11 +16,11 @@ export default function DecorationGridCreate(props: DecorationGridCreateProps) {
       isSelected={false}
   >
       <PlusIcon />
-      <Text
+      <Text.Normal
           variant="text-xs/normal"
           color="header-primary"
       >
           {i18n.Messages.CREATE}
-      </Text>
+      </Text.Normal>
   </DecorationGridItem >;
 }

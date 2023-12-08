@@ -3,7 +3,7 @@ import { cl } from "..";
 import Grid, { GridProps } from "./Grid";
 
 
-const ScrollerClasses = webpack.getByProps("managedReactiveScroller")
+const ScrollerClasses = await webpack.waitForModule<{ thin: string }>(webpack.filters.byProps("managedReactiveScroller"))
 
 type Section<SectionT, ItemT> = SectionT & {
   items: Array<ItemT>;
