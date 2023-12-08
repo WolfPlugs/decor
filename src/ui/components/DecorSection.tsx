@@ -6,7 +6,7 @@ import { openChangeDecorationModal } from "../modals/ChangeDecorationModal";
 
 const { React } = common
 const { Flex, Button } = components
-const CustomizationSection = webpack.getBySource(".customizationSectionBackground");
+let CustomizationSection;
 
 
 interface DecorSectionProps {
@@ -17,7 +17,7 @@ interface DecorSectionProps {
 
 
 export default function DecorSection({ hideTitle = false, hideDivider = false, noMargin = false }: DecorSectionProps) {
-
+  CustomizationSection ??= webpack.getBySource(".customizationSectionBackground");
   const authorization = useAuthorizationStore();
   const { selectedDecoration, select: selectDecoration, fetch: fetchDecorations } = useCurrentUserDecorationsStore();
   
