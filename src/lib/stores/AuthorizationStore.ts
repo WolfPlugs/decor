@@ -16,11 +16,15 @@ interface AuthorizationState {
   isAuthorized: () => boolean;
 }
 
-export const useAuthorizationStore = {
-  token: authorizationToken.get("token", null),
-  tokens: authorizationToken.get("tokens", {
-    [users.getCurrentUser().id]: authorizationToken.get("token", null),
-  }),
+export const authorizationStore = {
+  get token() {
+    return authorizationToken.get("token", null);
+  },
+  get tokens() {
+    return authorizationToken.get("tokens", {
+      [users.getCurrentUser().id]: authorizationToken.get("token", null),
+    });
+  },
   init: () => {},
   setToken: (token: string) => {
     authorizationToken.set("token", token);
@@ -36,5 +40,7 @@ export const useAuthorizationStore = {
     authorizationToken.set("tokens", tokens);
   },
   authorize: () => void showAuthorizationModal(),
-  isAuthorized: () => Boolean(authorizationToken.get("token", null)),
+  get isAuthorized() {
+    return () => Boolean(authorizationToken.get("token", null));
+  },
 };
