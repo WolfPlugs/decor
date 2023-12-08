@@ -12,15 +12,12 @@ type DecorationGridNoneProps = HTMLProps<HTMLDivElement> & {
 };
 
 export default function DecorationGridNone(props: DecorationGridNoneProps) {
-  return <DecorationGridItem
-    {...props}
-  >
-    <NoEntrySignIcon />
-    <Text.Normal
-      variant="text-xs/normal"
-      color="header-primary"
-    >
-      {i18n.Messages.NONE}
-    </Text.Normal>
-  </DecorationGridItem >;
+  return (
+    <DecorationGridItem {...props}>
+      <NoEntrySignIcon />
+      <Text.Normal variant="text-xs/normal" color="header-primary">
+        {i18n.Messages.NONE}
+      </Text.Normal>
+    </DecorationGridItem>
+  );
 }
